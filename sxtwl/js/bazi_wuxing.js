@@ -309,7 +309,7 @@ function source_or_not_wuxing(bazi_arr) {
 function recommend_wuxing1(bazi_arr, s_or_not_wuxing, s_or_not_strenth) {
     var res = [];
     var diff = s_or_not_strenth[0] - s_or_not_strenth[1];
-    console.log("recommend_wuxing1: ", diff, s_or_not_strenth);
+    // console.log("recommend_wuxing1: ", diff, s_or_not_strenth);
     if(diff > 2) { // 太强
         res.push(s_or_not_wuxing.source_not_wuxing[0]);
         res.push(s_or_not_wuxing.source_not_wuxing[1]);
@@ -340,7 +340,7 @@ function recommend_wuxing1(bazi_arr, s_or_not_wuxing, s_or_not_strenth) {
 
 
 // 强度计算表，八个字中每个字有不同的权重， 日干 为本命，离其近的越大，其中特殊的 月支 强度最大
-const recommend_wuxing2_score_table = [0.25, 0.2, 0.5, 1, 0, 0.5, 0.5, 0.4];
+const recommend_wuxing2_score_table = [0.2, 0.1, 0.3, 1, 0, 0.3, 0.3, 0.3];
 // 计算强度值的方式 2 ，根据 recommend_wuxing2_score_table 计算
 // bazi_arr ：八字索引数组
 // s_or_not_wuxing ：为 source_or_not_wuxing 返回结果
@@ -354,7 +354,7 @@ function bazi_strength2(bazi_arr, s_or_not_wuxing) {
         bazi_wuxing_arr.push(dizhi_wuxing_prop[bazi_arr[k + 1]]);
     }
     var score = 0;
-    console.log('recommend_wuxing2: ', bazi_wuxing_arr, s_or_not_wuxing);
+    // console.log('recommend_wuxing2: ', bazi_wuxing_arr, s_or_not_wuxing);
     for (var k = 0; k < bazi_wuxing_arr.length; k++) {
         if(s_or_not_wuxing.source_wuxing.indexOf(bazi_wuxing_arr[k]) >= 0) {
             // 此处还可细分为 同我 和 生我 加不同的比例
@@ -367,7 +367,7 @@ function bazi_strength2(bazi_arr, s_or_not_wuxing) {
             score -= recommend_wuxing2_score_table[k];
         }
     }
-    console.log("bazi_strength2: ", score);
+    // console.log("bazi_strength2: ", score);
     return score;
 }
 
