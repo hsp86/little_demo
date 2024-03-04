@@ -1,5 +1,5 @@
 
-
+// 选择时间控件改变时
 function datetime_change() {
     console.log("datetime_change:", Cml_datetime.value); // 2024-02-28T11:04
     var t = new Date(Cml_datetime.value);
@@ -11,12 +11,8 @@ function datetime_change() {
 
 // 从 bazi_span 中获取八字，同时也要返回时间
 function bazi_span_get() {
+    ML_calc(); // 确保显示日期和计算同步，都自动计算一次
     var bazi_span_ele = document.getElementById('bazi_span');
-    if(!bazi_span_ele) {
-        // 如果没有计算则自动计算一次
-        ML_calc();
-        bazi_span_ele = document.getElementById('bazi_span');
-    }
     var bazi_str_orig = bazi_span_ele.innerHTML;
     // console.log(bazi_str_orig);
     var bazi_str_arr = bazi_str_orig.trim().split(" ");
@@ -58,7 +54,7 @@ function bazi_span_get() {
     return {bazi_time, bazi_str};
 }
 
-
+// 生成当前选择时间的五行信息
 function bazi_cur_time() {
     var {bazi_time, bazi_str} = bazi_span_get();
     console.log(bazi_str);
@@ -69,8 +65,10 @@ function bazi_cur_time() {
     console.log(bazi_all_res);
     var cal_wuxing = document.getElementById('Cal_WuXing');
     cal_wuxing.innerHTML = gen_item_str(bazi_time, bazi_arr, bazi_all_res);
+    gen_share_link(0);
 }
 
+// 生成当前选择时间整天的五行信息
 function bazi_cur_day() {
     var {bazi_time, bazi_str} = bazi_span_get();
     console.log(bazi_str);
@@ -88,6 +86,7 @@ function bazi_cur_day() {
     }
     var cal_wuxing = document.getElementById('Cal_WuXing');
     cal_wuxing.innerHTML = cal_wuxing_content;
+    gen_share_link(1);
 }
 
 
@@ -139,6 +138,78 @@ function gen_item_str(bazi_time, bazi_arr, bazi_all_res) {
     `;
 }
 
+// 生成分享链接内容并添加到 HTML
+function gen_share_link(is_cur_day) {
+    var search_hash_len = window.location.search.length + window.location.hash.length;
+    var base_link = window.location.href;
+    if(search_hash_len > 0)//  search_hash_len 为 0 的时候不能这样操作
+    {
+        base_link = base_link.slice(0, -search_hash_len);
+    }
+    var gen_link = base_link + '?' +
+        'Cp11_J' + '=' + Cp11_J.value + '&' +
+        'Cml_y' + '=' + Cml_y.value + '&' +
+        'Cml_m' + '=' + Cml_m.value + '&' +
+        'Cml_d' + '=' + Cml_d.value + '&' +
+        'Cml_his' + '=' + Cml_his.value + '&' +
+        'is_cur_day' + '=' + is_cur_day;
+        // xxx + '=' + encodeURIComponent(gen_pass);
+    gen_a_add(document.getElementById('share_link'), gen_link);
+}
+// 分析当前链接（分享链接内容）并计算结果
+function decode_share_link() {
+    var psi = path_search_items(window.location.search.slice(1));
+    console.log(psi);
+    if(psi.length < 5) { // 至少需要五个参数：经度、年、月、日、时分秒
+        return 0;
+    }
+    // 五个参数只要其中一个没有则无法解析
+    if(!psi.Cp11_J || !psi.Cml_y || !psi.Cml_m || !psi.Cml_d || !psi.Cml_his) {
+        return 0;
+    }
+    Cp11_J.value = psi.Cp11_J;
+    Cml_y.value = psi.Cml_y;
+    Cml_m.value = psi.Cml_m;
+    Cml_d.value = psi.Cml_d;
+    Cml_his.value = psi.Cml_his;
+    if(psi.is_cur_day && psi.is_cur_day != '0') {
+        bazi_cur_day();
+    } else {
+        bazi_cur_time();
+    }
+    return psi.length;
+}
+//  解析传递进入的各参数
+// 解析类似:parent_pass=mrqfsddudrihvqdw&content=xxxx
+function path_search_items(str)
+{
+    // var str = window.location.search.slice(1);
+    var items = {};
+    var arr = str.split('&');
+    console.log("path_search_items: ", str, arr);
+    var len = 0;
+    for(var k = 0;k < arr.length;k++)
+    {
+        if(arr[k] === '') {
+            continue;
+        }
+        len += 1;
+        var one_item = arr[k].split('=');
+        items[decodeURIComponent(one_item[0])] = decodeURIComponent(one_item[1]);
+    }
+    items['length'] = len;
+    return items;
+}
+// 创建连接并添加到指令元素上
+function gen_a_add(el, link)
+{
+    var a = document.createElement('a');
+    a.setAttribute('href', link);
+    a.innerHTML = '计算结果分享';
+    el.innerHTML = '';
+    el.appendChild(a);
+}
+
 window.onload = function() {
     showPage(11); // 八字功能页面
 
@@ -147,4 +218,7 @@ window.onload = function() {
     Sel2.value = "TVXY"; // 南岸区
     change2();
 
+    if(decode_share_link() >= 5) { // 分享页面不显示选择地址表格
+        head_table.style.display = 'none';
+    }
 };
