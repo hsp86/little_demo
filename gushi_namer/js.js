@@ -4361,13 +4361,15 @@ var kangxidict = [];
         var res = "";
         for(var k = 0; k < wx_detail_arr.length; k++) {
             var wx_detail_k = wx_detail_arr[k];
+            console.log("wx_arr2html", wx_detail_k);
             res += "<div style='margin: 5px;'>";
             res += "<span style='font-weight: bold'>" + wx_detail_k[0] + " </span>";
             if(wx_detail_k.length > 2) {
                 res += "<span> | 拼音：" + wx_detail_k[1] + " </span>";
                 res += "<span> | 笔画：" + wx_detail_k[2] + " </span>";
                 res += "<span> | 五行：" + wx_detail_k[3] + " </span>";
-                var xm = wx_detail_k[4];
+                res += "<span> | 吉凶：" + ((wx_detail_k[4] == '')?"无":wx_detail_k[4]) + " </span>";
+                var xm = wx_detail_k[5];
                 var xms = xm.split(",");
                 var xm_str = "";
                 if(xms[0] == "Y") {
