@@ -27,15 +27,6 @@
                 <input type="text" name="family-name" value="胡" placeholder="输入姓氏">
             </p>
             <button class="btn-go">起名</button>
-            <details id="details_full_name" style="cursor: pointer;width: 100%;">
-                <summary>姓名五行查询</summary>
-                <center>
-                    <label for="full-name">全名：</label>
-                    <input type="text" name="full-name" value="胡某某" placeholder="输入全名">
-                    <input class="btn-wx-test" type="button" value="五行查询" style="box-sizing: border-box;padding: 2px;" />
-                    <div class="wx-test-result"></div>
-                </center>
-            </details>
         </div>
         <div class="result">
             <ul class="result-container"></ul>
@@ -50,7 +41,31 @@
                 </rect>
             </svg>
         </div>
+        <details id="details_full_name">
+            <summary>姓名五行查询</summary>
+            <center>
+                <label for="full-name">全名：</label>
+                <input type="text" name="full-name" value="胡某某" placeholder="输入全名">
+                <input class="btn-wx-test" type="button" value="五行查询" style="box-sizing: border-box;padding: 2px;" />
+                <div class="wx-test-result"></div>
+            </center>
+        </details>
     </div>
     <script type="text/javascript" src="js.js"></script>
+    <style>
+        /*@media (max-width: 767px) {*/
+            #details_full_name {
+                z-index: 3;
+                cursor: pointer;
+                position: fixed;
+                top: 0px;
+                left: 0px;
+                margin: 5px;
+                background-color: rgba(231, 179, 117, 0.5);
+                /*background-color: rgba(255, 255, 255, 0.5);*/
+                /*width: 30%;*/
+            }
+        /*}*/
+    </style>
 </body>
 </html>
